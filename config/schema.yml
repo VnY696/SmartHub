@@ -1,0 +1,3665 @@
+openapi: 3.0.3
+info:
+  title: SmartHub — AI-Powered Local Service Marketplace API
+  version: 1.0.0
+  description: REST API for connecting customers with local service providers. Features
+    include service discovery, booking management, reviews, AI-powered recommendations,
+    and an AI chatbot.
+paths:
+  /api/accounts/change-password/:
+    post:
+      operationId: accounts_change_password_create
+      description: POST /api/accounts/change-password/
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangePassword'
+          description: ''
+  /api/accounts/login/:
+    post:
+      operationId: accounts_login_create
+      description: POST /api/accounts/login/ — JWT login with custom claims.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/accounts/logout/:
+    post:
+      operationId: accounts_logout_create
+      description: POST /api/accounts/logout/ — blacklist the refresh token.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Logout'
+          description: ''
+  /api/accounts/profile/:
+    get:
+      operationId: accounts_profile_retrieve
+      description: |-
+        GET/PUT/PATCH /api/accounts/profile/
+        Authenticated user's own profile.
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: accounts_profile_update
+      description: |-
+        GET/PUT/PATCH /api/accounts/profile/
+        Authenticated user's own profile.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: accounts_profile_partial_update
+      description: |-
+        GET/PUT/PATCH /api/accounts/profile/
+        Authenticated user's own profile.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/accounts/providers/:
+    get:
+      operationId: accounts_providers_list
+      description: |-
+        GET /api/accounts/providers/
+        Public list of approved providers.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProviderProfileList'
+          description: ''
+  /api/accounts/providers/{id}/:
+    get:
+      operationId: accounts_providers_retrieve
+      description: |-
+        GET /api/accounts/providers/{id}/
+        Public view of a single provider.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderProfile'
+          description: ''
+  /api/accounts/providers/{id}/verify/:
+    put:
+      operationId: accounts_providers_verify_update
+      description: |-
+        PATCH /api/accounts/providers/{id}/verify/
+        Admin-only: approve or reject a provider.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProviderVerificationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProviderVerificationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProviderVerificationRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderVerification'
+          description: ''
+    patch:
+      operationId: accounts_providers_verify_partial_update
+      description: |-
+        PATCH /api/accounts/providers/{id}/verify/
+        Admin-only: approve or reject a provider.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProviderVerificationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProviderVerificationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProviderVerificationRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderVerification'
+          description: ''
+  /api/accounts/providers/me/:
+    get:
+      operationId: accounts_providers_me_retrieve
+      description: |-
+        GET/PUT/PATCH /api/accounts/providers/me/
+        Provider manages their own profile.
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderProfile'
+          description: ''
+    put:
+      operationId: accounts_providers_me_update
+      description: |-
+        GET/PUT/PATCH /api/accounts/providers/me/
+        Provider manages their own profile.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProviderProfileUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProviderProfileUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProviderProfileUpdateRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderProfileUpdate'
+          description: ''
+    patch:
+      operationId: accounts_providers_me_partial_update
+      description: |-
+        GET/PUT/PATCH /api/accounts/providers/me/
+        Provider manages their own profile.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProviderProfileUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProviderProfileUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProviderProfileUpdateRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderProfileUpdate'
+          description: ''
+  /api/accounts/providers/pending/:
+    get:
+      operationId: accounts_providers_pending_list
+      description: |-
+        GET /api/accounts/providers/pending/
+        Admin-only: list providers awaiting verification.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProviderProfileList'
+          description: ''
+  /api/accounts/register/:
+    post:
+      operationId: accounts_register_create
+      description: POST /api/accounts/register/ — public registration.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: ''
+  /api/accounts/token/refresh/:
+    post:
+      operationId: accounts_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/accounts/users/:
+    get:
+      operationId: accounts_users_list
+      description: |-
+        GET /api/accounts/users/
+        Admin-only: list all users with filtering.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserAdminList'
+          description: ''
+  /api/accounts/users/{id}/:
+    get:
+      operationId: accounts_users_retrieve
+      description: |-
+        GET/PATCH/DELETE /api/accounts/users/{id}/
+        Admin-only: manage individual users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAdmin'
+          description: ''
+    put:
+      operationId: accounts_users_update
+      description: |-
+        GET/PATCH/DELETE /api/accounts/users/{id}/
+        Admin-only: manage individual users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAdminRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserAdminRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserAdminRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAdmin'
+          description: ''
+    patch:
+      operationId: accounts_users_partial_update
+      description: |-
+        GET/PATCH/DELETE /api/accounts/users/{id}/
+        Admin-only: manage individual users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserAdminRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserAdminRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserAdminRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAdmin'
+          description: ''
+    delete:
+      operationId: accounts_users_destroy
+      description: |-
+        GET/PATCH/DELETE /api/accounts/users/{id}/
+        Admin-only: manage individual users.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - accounts
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/admin/dashboard/:
+    get:
+      operationId: admin_dashboard_retrieve
+      description: |-
+        GET /api/admin/dashboard/
+
+        Returns platform-wide statistics:
+        - User counts (total, by role)
+        - Provider stats (pending, approved)
+        - Service stats (total, by status)
+        - Booking stats (total, by status)
+        - Review stats (total, average rating)
+      tags:
+      - admin
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDashboardResponse'
+          description: ''
+  /api/bookings/:
+    post:
+      operationId: bookings_create
+      description: POST /api/bookings/ — customer creates a booking.
+      tags:
+      - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BookingCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BookingCreateRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingCreate'
+          description: ''
+  /api/bookings/{id}/:
+    get:
+      operationId: bookings_retrieve
+      description: GET /api/bookings/{id}/ — booking detail (customer or provider).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - bookings
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+          description: ''
+  /api/bookings/{id}/accept/:
+    patch:
+      operationId: bookings_accept_partial_update
+      description: PATCH /api/bookings/{id}/accept/
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingStatus'
+          description: ''
+  /api/bookings/{id}/cancel/:
+    patch:
+      operationId: bookings_cancel_partial_update
+      description: PATCH /api/bookings/{id}/cancel/ — customer cancels booking.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+          description: ''
+  /api/bookings/{id}/complete/:
+    patch:
+      operationId: bookings_complete_partial_update
+      description: PATCH /api/bookings/{id}/complete/
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingStatus'
+          description: ''
+  /api/bookings/{id}/reject/:
+    patch:
+      operationId: bookings_reject_partial_update
+      description: PATCH /api/bookings/{id}/reject/
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingStatus'
+          description: ''
+  /api/bookings/{id}/start/:
+    patch:
+      operationId: bookings_start_partial_update
+      description: PATCH /api/bookings/{id}/start/
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingStatusRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingStatus'
+          description: ''
+  /api/bookings/admin/:
+    get:
+      operationId: bookings_admin_list
+      description: GET /api/bookings/admin/ — admin sees all bookings.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - bookings
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBookingList'
+          description: ''
+  /api/bookings/admin/{id}/:
+    put:
+      operationId: bookings_admin_update
+      description: PATCH /api/bookings/admin/{id}/ — admin can update any booking.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BookingRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BookingRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+          description: ''
+    patch:
+      operationId: bookings_admin_partial_update
+      description: PATCH /api/bookings/admin/{id}/ — admin can update any booking.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBookingRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+          description: ''
+  /api/bookings/my/:
+    get:
+      operationId: bookings_my_list
+      description: GET /api/bookings/my/ — customer's own bookings.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - bookings
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBookingList'
+          description: ''
+  /api/bookings/provider/:
+    get:
+      operationId: bookings_provider_list
+      description: GET /api/bookings/provider/ — provider's bookings.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - bookings
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBookingList'
+          description: ''
+  /api/chatbot/chat/:
+    post:
+      operationId: chatbot_chat_create
+      description: |-
+        POST /api/chatbot/chat/
+
+        Request: {"message": "I need a plumber near me"}
+        Response: {
+            "reply": "...",
+            "recommended_services": [...],
+            "recommended_categories": [...]
+        }
+      tags:
+      - chatbot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChatMessageInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChatMessageInputRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+          description: ''
+  /api/notifications/:
+    get:
+      operationId: notifications_list
+      description: GET /api/notifications/ — user's notifications.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationList'
+          description: ''
+  /api/notifications/{id}/read/:
+    patch:
+      operationId: notifications_read_partial_update
+      description: PATCH /api/notifications/{id}/read/ — mark single notification
+        as read.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/notifications/read-all/:
+    patch:
+      operationId: notifications_read_all_partial_update
+      description: PATCH /api/notifications/read-all/ — mark all notifications as
+        read.
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/recommendations/:
+    get:
+      operationId: recommendations_retrieve
+      description: |-
+        GET /api/recommendations/
+        Returns personalized recommendations for authenticated users,
+        or popular services for anonymous users.
+      tags:
+      - recommendations
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+          description: ''
+  /api/reviews/:
+    post:
+      operationId: reviews_create
+      description: POST /api/reviews/ — customer creates a review.
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReviewCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReviewCreateRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewCreate'
+          description: ''
+  /api/reviews/{id}/:
+    put:
+      operationId: reviews_update
+      description: PUT/PATCH /api/reviews/{id}/ — customer updates their review.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReviewUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReviewUpdateRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewUpdate'
+          description: ''
+    patch:
+      operationId: reviews_partial_update
+      description: PUT/PATCH /api/reviews/{id}/ — customer updates their review.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedReviewUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedReviewUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedReviewUpdateRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewUpdate'
+          description: ''
+  /api/reviews/{id}/delete/:
+    delete:
+      operationId: reviews_delete_destroy
+      description: DELETE /api/reviews/{id}/ — customer or admin deletes a review.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - reviews
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/reviews/{id}/response/:
+    post:
+      operationId: reviews_response_create
+      description: POST /api/reviews/{id}/response/ — provider responds to a review.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - reviews
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProviderResponseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProviderResponseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProviderResponseRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderResponse'
+          description: ''
+  /api/reviews/provider/{id}/:
+    get:
+      operationId: reviews_provider_list
+      description: GET /api/reviews/provider/{id}/ — all reviews for a provider.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - reviews
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReviewList'
+          description: ''
+  /api/reviews/service/{id}/:
+    get:
+      operationId: reviews_service_list
+      description: GET /api/reviews/service/{id}/ — all reviews for a service.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - reviews
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedReviewList'
+          description: ''
+  /api/services/:
+    get:
+      operationId: services_list
+      description: |-
+        GET /api/services/ — public, list active services with filtering.
+        Supports: ?search=, ?category=, ?city=, ?min_price=, ?max_price=,
+                  ?ordering=, ?page=, ?page_size=
+      parameters:
+      - in: query
+        name: category
+        schema:
+          type: integer
+      - in: query
+        name: category_slug
+        schema:
+          type: string
+      - in: query
+        name: city
+        schema:
+          type: string
+      - in: query
+        name: experience
+        schema:
+          type: integer
+      - in: query
+        name: is_available
+        schema:
+          type: boolean
+      - in: query
+        name: max_price
+        schema:
+          type: number
+      - in: query
+        name: min_price
+        schema:
+          type: number
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: pricing_type
+        schema:
+          type: string
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedServiceList'
+          description: ''
+  /api/services/{id}/:
+    get:
+      operationId: services_retrieve
+      description: GET /api/services/{id}/ — public, service detail.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Service'
+          description: ''
+  /api/services/{id}/delete/:
+    delete:
+      operationId: services_delete_destroy
+      description: DELETE /api/services/{id}/delete/ — owner or admin.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/services/{id}/update/:
+    put:
+      operationId: services_update_update
+      description: PUT/PATCH /api/services/{id}/update/ — owner only.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdateRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUpdate'
+          description: ''
+    patch:
+      operationId: services_update_partial_update
+      description: PUT/PATCH /api/services/{id}/update/ — owner only.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceUpdateRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUpdate'
+          description: ''
+  /api/services/admin/:
+    get:
+      operationId: services_admin_list
+      description: GET /api/services/admin/ — admin sees all services.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedServiceList'
+          description: ''
+  /api/services/admin/{id}/:
+    put:
+      operationId: services_admin_update
+      description: PATCH /api/services/admin/{id}/ — admin can change service status.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdateRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUpdate'
+          description: ''
+    patch:
+      operationId: services_admin_partial_update
+      description: PATCH /api/services/admin/{id}/ — admin can change service status.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedServiceUpdateRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceUpdate'
+          description: ''
+  /api/services/categories/:
+    get:
+      operationId: services_categories_list
+      description: |-
+        GET /api/services/categories/ — public, list active categories
+        POST /api/services/categories/ — admin only, create category
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategoryList'
+          description: ''
+    post:
+      operationId: services_categories_create
+      description: |-
+        GET /api/services/categories/ — public, list active categories
+        POST /api/services/categories/ — admin only, create category
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/services/categories/{id}/:
+    get:
+      operationId: services_categories_retrieve
+      description: |-
+        GET /api/services/categories/{id}/ — public
+        PUT/PATCH /api/services/categories/{id}/ — admin only
+        DELETE /api/services/categories/{id}/ — admin only
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    put:
+      operationId: services_categories_update
+      description: |-
+        GET /api/services/categories/{id}/ — public
+        PUT/PATCH /api/services/categories/{id}/ — admin only
+        DELETE /api/services/categories/{id}/ — admin only
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    patch:
+      operationId: services_categories_partial_update
+      description: |-
+        GET /api/services/categories/{id}/ — public
+        PUT/PATCH /api/services/categories/{id}/ — admin only
+        DELETE /api/services/categories/{id}/ — admin only
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    delete:
+      operationId: services_categories_destroy
+      description: |-
+        GET /api/services/categories/{id}/ — public
+        PUT/PATCH /api/services/categories/{id}/ — admin only
+        DELETE /api/services/categories/{id}/ — admin only
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/services/compare/:
+    get:
+      operationId: services_compare_list
+      description: |-
+        GET /api/services/compare/?ids=1,2,3
+        Compare up to 5 services side by side.
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceCompare'
+          description: ''
+  /api/services/create/:
+    post:
+      operationId: services_create_create
+      description: POST /api/services/create/ — provider only, create service.
+      tags:
+      - services
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ServiceCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ServiceCreateRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceCreate'
+          description: ''
+  /api/services/my/:
+    get:
+      operationId: services_my_list
+      description: GET /api/services/my/ — provider sees their own services.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - services
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedServiceList'
+          description: ''
+components:
+  schemas:
+    AdminDashboardResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          additionalProperties: {}
+      required:
+      - data
+      - success
+    Booking:
+      type: object
+      description: Full booking detail serializer.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        customer:
+          type: integer
+          readOnly: true
+        customer_name:
+          type: string
+          readOnly: true
+        customer_email:
+          type: string
+          readOnly: true
+        provider:
+          type: integer
+          readOnly: true
+        provider_name:
+          type: string
+          readOnly: true
+        service:
+          type: integer
+        service_title:
+          type: string
+          readOnly: true
+        booking_date:
+          type: string
+          format: date
+        preferred_time:
+          type: string
+          format: time
+          nullable: true
+        address:
+          type: string
+          description: Service delivery address
+        customer_notes:
+          type: string
+        provider_notes:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/BookingStatusEnum'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - address
+      - booking_date
+      - created_at
+      - customer
+      - customer_email
+      - customer_name
+      - id
+      - price
+      - provider
+      - provider_name
+      - service
+      - service_title
+      - status
+      - updated_at
+    BookingCreate:
+      type: object
+      description: |-
+        Customer creates a booking.
+        Auto-sets customer, provider, and price from the service.
+      properties:
+        service:
+          type: integer
+        booking_date:
+          type: string
+          format: date
+        preferred_time:
+          type: string
+          format: time
+          nullable: true
+        address:
+          type: string
+          description: Service delivery address
+        customer_notes:
+          type: string
+      required:
+      - address
+      - booking_date
+      - service
+    BookingCreateRequest:
+      type: object
+      description: |-
+        Customer creates a booking.
+        Auto-sets customer, provider, and price from the service.
+      properties:
+        service:
+          type: integer
+        booking_date:
+          type: string
+          format: date
+        preferred_time:
+          type: string
+          format: time
+          nullable: true
+        address:
+          type: string
+          minLength: 1
+          description: Service delivery address
+        customer_notes:
+          type: string
+      required:
+      - address
+      - booking_date
+      - service
+    BookingRequest:
+      type: object
+      description: Full booking detail serializer.
+      properties:
+        service:
+          type: integer
+        booking_date:
+          type: string
+          format: date
+        preferred_time:
+          type: string
+          format: time
+          nullable: true
+        address:
+          type: string
+          minLength: 1
+          description: Service delivery address
+        customer_notes:
+          type: string
+        provider_notes:
+          type: string
+      required:
+      - address
+      - booking_date
+      - service
+    BookingStatus:
+      type: object
+      description: Used by provider to add notes when changing status.
+      properties:
+        provider_notes:
+          type: string
+    BookingStatusEnum:
+      enum:
+      - pending
+      - accepted
+      - rejected
+      - confirmed
+      - in_progress
+      - completed
+      - cancelled
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `accepted` - Accepted
+        * `rejected` - Rejected
+        * `confirmed` - Confirmed
+        * `in_progress` - In Progress
+        * `completed` - Completed
+        * `cancelled` - Cancelled
+    Category:
+      type: object
+      description: Full category serializer — slug is auto-generated.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        slug:
+          type: string
+          readOnly: true
+          pattern: ^[-a-zA-Z0-9_]+$
+        description:
+          type: string
+        image:
+          type: string
+          format: uri
+          nullable: true
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+      - slug
+      - updated_at
+    CategoryRequest:
+      type: object
+      description: Full category serializer — slug is auto-generated.
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+        image:
+          type: string
+          format: binary
+          nullable: true
+        is_active:
+          type: boolean
+      required:
+      - name
+    ChangePassword:
+      type: object
+      description: Validates old password and sets a new one.
+      properties:
+        old_password:
+          type: string
+        new_password:
+          type: string
+      required:
+      - new_password
+      - old_password
+    ChangePasswordRequest:
+      type: object
+      description: Validates old password and sets a new one.
+      properties:
+        old_password:
+          type: string
+          minLength: 1
+        new_password:
+          type: string
+          minLength: 1
+      required:
+      - new_password
+      - old_password
+    ChatMessageInputRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          minLength: 1
+          description: User's query or message for the chatbot
+          maxLength: 1000
+      required:
+      - message
+    ChatResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        reply:
+          type: string
+        recommended_services:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+        recommended_categories:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+      required:
+      - reply
+      - success
+    LoginRequest:
+      type: object
+      description: |-
+        JWT login serializer — uses email as the username field.
+        Includes user role and id in the token claims.
+      properties:
+        email:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - email
+      - password
+    Logout:
+      type: object
+      properties:
+        refresh:
+          type: string
+      required:
+      - refresh
+    LogoutRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          minLength: 1
+      required:
+      - refresh
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        notification_type:
+          allOf:
+          - $ref: '#/components/schemas/NotificationTypeEnum'
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        is_read:
+          type: boolean
+          readOnly: true
+        related_booking:
+          type: integer
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - is_read
+      - message
+      - notification_type
+      - related_booking
+      - title
+    NotificationTypeEnum:
+      enum:
+      - booking_created
+      - booking_accepted
+      - booking_rejected
+      - booking_completed
+      - booking_cancelled
+      - booking_started
+      - provider_approved
+      - provider_rejected
+      - review_received
+      - general
+      type: string
+      description: |-
+        * `booking_created` - Booking Created
+        * `booking_accepted` - Booking Accepted
+        * `booking_rejected` - Booking Rejected
+        * `booking_completed` - Booking Completed
+        * `booking_cancelled` - Booking Cancelled
+        * `booking_started` - Service Started
+        * `provider_approved` - Provider Approved
+        * `provider_rejected` - Provider Rejected
+        * `review_received` - Review Received
+        * `general` - General
+    PaginatedBookingList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Booking'
+    PaginatedCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    PaginatedNotificationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    PaginatedProviderProfileList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderProfile'
+    PaginatedReviewList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+    PaginatedServiceList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Service'
+    PaginatedUserAdminList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserAdmin'
+    PatchedBookingRequest:
+      type: object
+      description: Full booking detail serializer.
+      properties:
+        service:
+          type: integer
+        booking_date:
+          type: string
+          format: date
+        preferred_time:
+          type: string
+          format: time
+          nullable: true
+        address:
+          type: string
+          minLength: 1
+          description: Service delivery address
+        customer_notes:
+          type: string
+        provider_notes:
+          type: string
+    PatchedBookingStatusRequest:
+      type: object
+      description: Used by provider to add notes when changing status.
+      properties:
+        provider_notes:
+          type: string
+    PatchedCategoryRequest:
+      type: object
+      description: Full category serializer — slug is auto-generated.
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+        image:
+          type: string
+          format: binary
+          nullable: true
+        is_active:
+          type: boolean
+    PatchedProviderProfileUpdateRequest:
+      type: object
+      description: Serializer for providers to update their own profile.
+      properties:
+        business_name:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        phone:
+          type: string
+          maxLength: 15
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        experience_years:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        skills:
+          type: string
+        profile_image:
+          type: string
+          format: binary
+          nullable: true
+        is_available:
+          type: boolean
+    PatchedProviderVerificationRequest:
+      type: object
+      description: Admin serializer to approve/reject providers.
+      properties:
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+    PatchedReviewUpdateRequest:
+      type: object
+      description: Customer can update their review text and rating.
+      properties:
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        review:
+          type: string
+    PatchedServiceUpdateRequest:
+      type: object
+      description: Serializer for providers to update their services.
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          minLength: 1
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        pricing_type:
+          $ref: '#/components/schemas/PricingTypeEnum'
+        duration:
+          type: string
+          description: E.g. '1 hour', '2-3 hours', 'Half day'
+          maxLength: 50
+        location:
+          type: string
+          description: Specific service location or area
+          maxLength: 200
+        city:
+          type: string
+          minLength: 1
+          maxLength: 100
+        address:
+          type: string
+        experience:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Experience in years
+        image:
+          type: string
+          format: binary
+          nullable: true
+        availability:
+          type: string
+          description: E.g. 'Mon-Fri 9AM-6PM', 'Weekends only'
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/StatusA2fEnum'
+        is_available:
+          type: boolean
+        category:
+          type: integer
+    PatchedUserAdminRequest:
+      type: object
+      description: Admin serializer for managing users — all fields accessible.
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        phone:
+          type: string
+          maxLength: 15
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        profile_image:
+          type: string
+          format: binary
+          nullable: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+    PatchedUserRequest:
+      type: object
+      description: |-
+        Serializer for viewing/updating user profiles.
+        Password and role are read-only on update.
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        phone:
+          type: string
+          maxLength: 15
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        profile_image:
+          type: string
+          format: binary
+          nullable: true
+    PricingTypeEnum:
+      enum:
+      - fixed
+      - hourly
+      - negotiable
+      type: string
+      description: |-
+        * `fixed` - Fixed
+        * `hourly` - Hourly
+        * `negotiable` - Negotiable
+    ProviderProfile:
+      type: object
+      description: |-
+        Serializer for provider profile — used for both display and update.
+        Includes nested user info (read-only).
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        business_name:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        phone:
+          type: string
+          maxLength: 15
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        experience_years:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        skills:
+          type: string
+        profile_image:
+          type: string
+          format: uri
+          nullable: true
+        verification_status:
+          allOf:
+          - $ref: '#/components/schemas/VerificationStatusEnum'
+          readOnly: true
+        is_available:
+          type: boolean
+        average_rating:
+          type: number
+          format: double
+          readOnly: true
+        total_reviews:
+          type: integer
+          readOnly: true
+        completed_bookings:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - average_rating
+      - completed_bookings
+      - created_at
+      - id
+      - total_reviews
+      - updated_at
+      - user
+      - verification_status
+    ProviderProfileUpdate:
+      type: object
+      description: Serializer for providers to update their own profile.
+      properties:
+        business_name:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        phone:
+          type: string
+          maxLength: 15
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        experience_years:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        skills:
+          type: string
+        profile_image:
+          type: string
+          format: uri
+          nullable: true
+        is_available:
+          type: boolean
+    ProviderProfileUpdateRequest:
+      type: object
+      description: Serializer for providers to update their own profile.
+      properties:
+        business_name:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        phone:
+          type: string
+          maxLength: 15
+        email:
+          oneOf:
+          - type: string
+            format: email
+            maxLength: 254
+          - type: string
+            maxLength: 0
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        experience_years:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        skills:
+          type: string
+        profile_image:
+          type: string
+          format: binary
+          nullable: true
+        is_available:
+          type: boolean
+    ProviderResponse:
+      type: object
+      description: Provider responds to a review.
+      properties:
+        provider_response:
+          type: string
+      required:
+      - provider_response
+    ProviderResponseRequest:
+      type: object
+      description: Provider responds to a review.
+      properties:
+        provider_response:
+          type: string
+          minLength: 1
+      required:
+      - provider_response
+    ProviderVerification:
+      type: object
+      description: Admin serializer to approve/reject providers.
+      properties:
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+    ProviderVerificationRequest:
+      type: object
+      description: Admin serializer to approve/reject providers.
+      properties:
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+    Register:
+      type: object
+      description: |-
+        Handles user registration with validation.
+        Auto-creates ProviderProfile for provider role.
+        Prevents self-registration as admin.
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        phone:
+          type: string
+          maxLength: 15
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        profile_image:
+          type: string
+          format: uri
+          nullable: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+      required:
+      - email
+      - username
+    RegisterRequest:
+      type: object
+      description: |-
+        Handles user registration with validation.
+        Auto-creates ProviderProfile for provider role.
+        Prevents self-registration as admin.
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        confirm_password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        phone:
+          type: string
+          maxLength: 15
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        profile_image:
+          type: string
+          format: binary
+          nullable: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+      required:
+      - confirm_password
+      - email
+      - password
+      - username
+    Review:
+      type: object
+      description: Full review display serializer.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        booking:
+          type: integer
+          readOnly: true
+        customer:
+          type: integer
+          readOnly: true
+        customer_name:
+          type: string
+          readOnly: true
+        provider:
+          type: integer
+          readOnly: true
+        service:
+          type: integer
+          readOnly: true
+        service_title:
+          type: string
+          readOnly: true
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        review:
+          type: string
+        provider_response:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - booking
+      - created_at
+      - customer
+      - customer_name
+      - id
+      - provider
+      - rating
+      - service
+      - service_title
+      - updated_at
+    ReviewCreate:
+      type: object
+      description: |-
+        Customer creates a review for a completed booking.
+        Validates: booking exists, is completed, belongs to customer, no duplicate.
+      properties:
+        booking:
+          type: integer
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        review:
+          type: string
+      required:
+      - booking
+      - rating
+    ReviewCreateRequest:
+      type: object
+      description: |-
+        Customer creates a review for a completed booking.
+        Validates: booking exists, is completed, belongs to customer, no duplicate.
+      properties:
+        booking:
+          type: integer
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        review:
+          type: string
+      required:
+      - booking
+      - rating
+    ReviewUpdate:
+      type: object
+      description: Customer can update their review text and rating.
+      properties:
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        review:
+          type: string
+      required:
+      - rating
+    ReviewUpdateRequest:
+      type: object
+      description: Customer can update their review text and rating.
+      properties:
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        review:
+          type: string
+      required:
+      - rating
+    RoleEnum:
+      enum:
+      - customer
+      - provider
+      - admin
+      type: string
+      description: |-
+        * `customer` - Customer
+        * `provider` - Provider
+        * `admin` - Admin
+    Service:
+      type: object
+      description: Read-only service serializer with nested relations.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        provider:
+          type: integer
+        provider_name:
+          type: string
+          readOnly: true
+        provider_email:
+          type: string
+          readOnly: true
+        category:
+          type: integer
+        category_name:
+          type: string
+          readOnly: true
+        category_slug:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        slug:
+          oneOf:
+          - type: string
+            maxLength: 50
+            pattern: ^[-a-zA-Z0-9_]+$
+          - type: string
+            maxLength: 0
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        pricing_type:
+          $ref: '#/components/schemas/PricingTypeEnum'
+        duration:
+          type: string
+          description: E.g. '1 hour', '2-3 hours', 'Half day'
+          maxLength: 50
+        location:
+          type: string
+          description: Specific service location or area
+          maxLength: 200
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        experience:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Experience in years
+        image:
+          type: string
+          format: uri
+          nullable: true
+        availability:
+          type: string
+          description: E.g. 'Mon-Fri 9AM-6PM', 'Weekends only'
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/StatusA2fEnum'
+        is_available:
+          type: boolean
+        average_rating:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+        total_reviews:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - category
+      - category_name
+      - category_slug
+      - city
+      - created_at
+      - description
+      - id
+      - price
+      - provider
+      - provider_email
+      - provider_name
+      - title
+      - updated_at
+    ServiceCompare:
+      type: object
+      description: |-
+        Compact serializer for side-by-side service comparison.
+        Includes provider info and key metrics.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        provider:
+          type: integer
+        provider_name:
+          type: string
+          readOnly: true
+        category_name:
+          type: string
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        pricing_type:
+          $ref: '#/components/schemas/PricingTypeEnum'
+        city:
+          type: string
+          maxLength: 100
+        experience:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Experience in years
+        average_rating:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+        total_reviews:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        is_available:
+          type: boolean
+        availability:
+          type: string
+          description: E.g. 'Mon-Fri 9AM-6PM', 'Weekends only'
+          maxLength: 200
+        duration:
+          type: string
+          description: E.g. '1 hour', '2-3 hours', 'Half day'
+          maxLength: 50
+      required:
+      - category_name
+      - city
+      - id
+      - price
+      - provider
+      - provider_name
+      - title
+    ServiceCreate:
+      type: object
+      description: Serializer for providers to create new services.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        pricing_type:
+          $ref: '#/components/schemas/PricingTypeEnum'
+        duration:
+          type: string
+          description: E.g. '1 hour', '2-3 hours', 'Half day'
+          maxLength: 50
+        location:
+          type: string
+          description: Specific service location or area
+          maxLength: 200
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        experience:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Experience in years
+        image:
+          type: string
+          format: uri
+          nullable: true
+        availability:
+          type: string
+          description: E.g. 'Mon-Fri 9AM-6PM', 'Weekends only'
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/StatusA2fEnum'
+        is_available:
+          type: boolean
+        category:
+          type: integer
+      required:
+      - category
+      - city
+      - description
+      - id
+      - price
+      - title
+    ServiceCreateRequest:
+      type: object
+      description: Serializer for providers to create new services.
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          minLength: 1
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        pricing_type:
+          $ref: '#/components/schemas/PricingTypeEnum'
+        duration:
+          type: string
+          description: E.g. '1 hour', '2-3 hours', 'Half day'
+          maxLength: 50
+        location:
+          type: string
+          description: Specific service location or area
+          maxLength: 200
+        city:
+          type: string
+          minLength: 1
+          maxLength: 100
+        address:
+          type: string
+        experience:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Experience in years
+        image:
+          type: string
+          format: binary
+          nullable: true
+        availability:
+          type: string
+          description: E.g. 'Mon-Fri 9AM-6PM', 'Weekends only'
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/StatusA2fEnum'
+        is_available:
+          type: boolean
+        category:
+          type: integer
+      required:
+      - category
+      - city
+      - description
+      - price
+      - title
+    ServiceUpdate:
+      type: object
+      description: Serializer for providers to update their services.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        pricing_type:
+          $ref: '#/components/schemas/PricingTypeEnum'
+        duration:
+          type: string
+          description: E.g. '1 hour', '2-3 hours', 'Half day'
+          maxLength: 50
+        location:
+          type: string
+          description: Specific service location or area
+          maxLength: 200
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        experience:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Experience in years
+        image:
+          type: string
+          format: uri
+          nullable: true
+        availability:
+          type: string
+          description: E.g. 'Mon-Fri 9AM-6PM', 'Weekends only'
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/StatusA2fEnum'
+        is_available:
+          type: boolean
+        category:
+          type: integer
+      required:
+      - category
+      - city
+      - description
+      - id
+      - price
+      - title
+    ServiceUpdateRequest:
+      type: object
+      description: Serializer for providers to update their services.
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          minLength: 1
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        pricing_type:
+          $ref: '#/components/schemas/PricingTypeEnum'
+        duration:
+          type: string
+          description: E.g. '1 hour', '2-3 hours', 'Half day'
+          maxLength: 50
+        location:
+          type: string
+          description: Specific service location or area
+          maxLength: 200
+        city:
+          type: string
+          minLength: 1
+          maxLength: 100
+        address:
+          type: string
+        experience:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Experience in years
+        image:
+          type: string
+          format: binary
+          nullable: true
+        availability:
+          type: string
+          description: E.g. 'Mon-Fri 9AM-6PM', 'Weekends only'
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/StatusA2fEnum'
+        is_available:
+          type: boolean
+        category:
+          type: integer
+      required:
+      - category
+      - city
+      - description
+      - price
+      - title
+    StatusA2fEnum:
+      enum:
+      - active
+      - inactive
+      - pending
+      - rejected
+      type: string
+      description: |-
+        * `active` - Active
+        * `inactive` - Inactive
+        * `pending` - Pending
+        * `rejected` - Rejected
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          minLength: 1
+      required:
+      - refresh
+    User:
+      type: object
+      description: |-
+        Serializer for viewing/updating user profiles.
+        Password and role are read-only on update.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          readOnly: true
+        phone:
+          type: string
+          maxLength: 15
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        profile_image:
+          type: string
+          format: uri
+          nullable: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - date_joined
+      - email
+      - id
+      - role
+      - username
+    UserAdmin:
+      type: object
+      description: Admin serializer for managing users — all fields accessible.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          readOnly: true
+        phone:
+          type: string
+          maxLength: 15
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        profile_image:
+          type: string
+          format: uri
+          nullable: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - date_joined
+      - email
+      - id
+      - username
+    UserAdminRequest:
+      type: object
+      description: Admin serializer for managing users — all fields accessible.
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        phone:
+          type: string
+          maxLength: 15
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        profile_image:
+          type: string
+          format: binary
+          nullable: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+      required:
+      - username
+    UserRequest:
+      type: object
+      description: |-
+        Serializer for viewing/updating user profiles.
+        Password and role are read-only on update.
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        phone:
+          type: string
+          maxLength: 15
+        city:
+          type: string
+          maxLength: 100
+        address:
+          type: string
+        profile_image:
+          type: string
+          format: binary
+          nullable: true
+      required:
+      - username
+    VerificationStatusEnum:
+      enum:
+      - pending
+      - approved
+      - rejected
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `approved` - Approved
+        * `rejected` - Rejected
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

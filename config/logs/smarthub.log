@@ -1,0 +1,53 @@
+INFO 2026-07-29 16:03:24,613 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:27,911 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:32,228 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:35,659 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:37,896 views New user registered: newcustomer@example.com (role=customer)
+INFO 2026-07-29 16:03:40,124 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:40,171 views Booking #1 created by customer@example.com for service 'Home Cleaning Pro'
+INFO 2026-07-29 16:03:40,180 services Notification created for provider@example.com: [booking_created] New Booking Request
+INFO 2026-07-29 16:03:42,406 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:42,420 views Booking #2 status changed to 'accepted' by provider provider@example.com
+INFO 2026-07-29 16:03:42,424 services Notification created for customer@example.com: [booking_accepted] Booking Accepted
+INFO 2026-07-29 16:03:47,042 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:49,210 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:51,333 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:51,381 views Review created by customer@example.com for service 'Math Tutoring' (rating=5)
+INFO 2026-07-29 16:03:51,383 services Notification created for provider@example.com: [review_received] New Review Received
+INFO 2026-07-29 16:03:53,443 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:54,515 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:56,578 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:03:58,811 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:04:00,963 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:28:00,183 views New user registered: alen@gmail.com (role=customer)
+INFO 2026-07-29 16:31:01,627 views User logged out: alen@gmail.com
+INFO 2026-07-29 16:36:38,574 views User logged out: user@gmail.com
+INFO 2026-07-29 16:38:27,609 signals ProviderProfile auto-created via signal for alenk@gmail.com
+INFO 2026-07-29 16:40:00,180 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:40:06,772 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:40:14,244 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:40:19,138 signals ProviderProfile auto-created via signal for provider@example.com
+INFO 2026-07-29 16:40:22,960 views New user registered: newcustomer@example.com (role=customer)
+INFO 2026-07-29 16:43:01,347 signals ProviderProfile auto-created via signal for alee@gmail.com
+INFO 2026-07-29 16:43:01,348 views New user registered: alee@gmail.com (role=provider)
+INFO 2026-07-29 16:44:23,414 views User logged out: alee@gmail.com
+INFO 2026-07-31 11:02:53,895 views New user registered: manjima@gmail.com (role=customer)
+INFO 2026-07-31 11:05:27,882 views User logged out: manjima@gmail.com
+INFO 2026-07-31 11:10:36,671 views Provider alee@gmail.com verification updated to 'approved' by admin user@gmail.com
+INFO 2026-07-31 11:10:39,388 views Provider alenk@gmail.com verification updated to 'approved' by admin user@gmail.com
+INFO 2026-07-31 11:13:34,541 signals ProviderProfile auto-created via signal for john@gmail.com
+INFO 2026-07-31 11:13:34,542 views New user registered: john@gmail.com (role=provider)
+INFO 2026-07-31 11:14:28,042 views User logged out: john@gmail.com
+INFO 2026-07-31 11:14:28,060 views User logged out: john@gmail.com
+INFO 2026-07-31 11:16:26,178 views Provider john@gmail.com verification updated to 'approved' by admin user@gmail.com
+INFO 2026-07-31 11:16:31,191 views User logged out: user@gmail.com
+INFO 2026-07-31 11:20:15,366 views User logged out: manjima@gmail.com
+INFO 2026-07-31 11:26:32,539 views User logged out: john@gmail.com
+INFO 2026-07-31 11:28:08,977 views Booking #1 created by manjima@gmail.com for service 'AC Repair'
+INFO 2026-07-31 11:28:09,035 services Notification created for john@gmail.com: [booking_created] New Booking Request
+INFO 2026-07-31 11:28:35,590 views User logged out: manjima@gmail.com
+INFO 2026-07-31 11:29:25,921 views Booking #1 status changed to 'accepted' by provider john@gmail.com
+INFO 2026-07-31 11:29:25,942 services Notification created for manjima@gmail.com: [booking_accepted] Booking Accepted
+INFO 2026-07-31 11:37:43,514 views User logged out: john@gmail.com
+INFO 2026-08-06 12:01:01,333 views User logged out: manjima@gmail.com
+INFO 2026-08-06 12:02:37,549 views User logged out: user@gmail.com
